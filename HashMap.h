@@ -68,6 +68,27 @@ public:
     int Size() {
         return size_;
     }
+    void Resize(int new_capacity) {
+        Node** new_data = new Node*[new_capacity];
+        for (int i = 0; i < new_capacity; i++) {
+            new_data[i] = nullptr;
+        }
+        // Rehash all the key-value pairs into the new data array.
+        for (int i = 0; i < capacity_; i++) {
+            Node* cur = data_[i];
+            while (cur != nullptr) {
+                Node* next = cur->next;
+                int hash = Hash(cur->key);
+                cur->next = new_data[hash];
+                new_data[hash] = cur;
+                cur = next;
+            }
+        }
+        delete[] data_;
+        data_ = new_data;
+        capacity_ = new_capacity;
+    }
+
 
 private:
     struct Node {
