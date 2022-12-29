@@ -5,144 +5,97 @@
 #include "PlayersHashTable.h"
 
 
-int PlayersHashTable::Hash(int playerId) {
-    return playerId % m_capacity;
-}
-int r_Hash(int playerId) {
-    return 1+ (playerId%capacity)
-}
-
-void resize();
-
-PlayersHashTable();
-~PlayersHashTable();
-void Put(int playerId, std::shared_ptr<Player> player);
-std::shared_ptr<Player> Get(int playerId) ;
-bool Contains(int playerId) ;
-void Remove(const int playerId);
-
-
-int NextMersennePrime(int n) {
-    // Implement a function that returns the next Mersenne prime number greater than or equal to n
-}
-
-void Resize() {
-    int new_capacity = NextMersennePrime(m_capacity * 2);
-    Node **new_table = new Node *[new_capacity]();
-
+PlayersHashTable::PlayersHashTable(): m_capacity(7),m_size(0) {
+    m_table = new PlayerNode *[m_capacity];
     for (int i = 0; i < m_capacity; i++) {
-        Node *entry = table_[i];
-        while (entry != nullptr) {
-            Node *next = entry->next;
-            int index = Hash(entry->key, new_capacity, kMersennePrime);
-            int step = r_Hash(entry->key, new_capacity, kMersennePrime);
-            while (new_table[index] != nullptr) {
-                index = (index + step) % new_capacity;
-            }
-            new_table[index] = entry;
-            entry->next = nullptr;
-            entry = next;
-        }
+        m_table[i] = nullptr;
     }
-
-    delete[] table_;
-    table_ = new_table;
-    m_capacity = new_capacity;
 }
 
-public:
-
-HashTable(int capacity) : m_size(0), m_capacity(capacity) {
-    table_ = new Node *[m_capacity]();
-}
-
-~HashTable() {
+PlayersHashTable::~PlayersHashTable() {
     for (int i = 0; i < m_capacity; i++) {
-        Node *entry = table_[i];
-        while (entry != nullptr) {
-            Node *prev = entry;
-            entry = entry->next;
-            delete prev;
+        PlayerNode *cur = m_table[i];
+        while (cur != nullptr) {
+            PlayerNode *next = cur->m_next;
+            delete cur;
+            cur = next;
         }
-        table_[i] = nullptr;
     }
-    delete[] table_;
+    delete[] m_table;
 }
 
-void Put(const K &key, const V &value) {
-    int index = Hash(key, m_capacity, kMersennePrime);
-    int step = r_Hash(key, m_capacity, kMersennePrime);
-    Node *entry = table_[index];
-    while (entry != nullptr) {
-        if (entry->key == key) {
-            entry->value = value;
-            return;
-        }
-        index = (index + step) % m_capacity;
-        entry = table_[index];
-    }
 
-    entry = new Node{key, value, table_[index]};
-    table_[index] = entry;
+void PlayersHashTable::insert(int playerId, std::shared_ptr<Player> player) {
+    if (m_size*2 > m_capacity) {
+        resize(m_capacity * 2 + 1);
+    }
+    int hash = Hash(playerId);
+    PlayerNode* new_node = new PlayerNode(playerId, std::move(player), m_table[hash]);
+    m_table[hash] = new_node;
     m_size++;
-
-    if (m_size > kLoadFactor * m_capacity) {
-        Resize();
-    }
 }
-
-V Get(const K &key) {
-    int index = Hash(key, m_capacity, kMersennePrime);
-    int step = r_Hash(key, m_capacity, kMersennePrime);
-    Node *entry = table_[index];
-    while (entry != nullptr) {
-        if (entry->key == key) {
-            return entry->value;
+std::shared_ptr<Player> PlayersHashTable::getPlayer(int playerId) {
+    int hash = Hash(playerId);
+    PlayerNode *cur = m_table[hash];
+    while (cur != nullptr) {
+        if (cur->m_playerId == playerId) {
+            return cur->m_player;
         }
-        index = (index + step) % m_capacity;
-        entry = table_[index];
+        cur = cur->m_next;
     }
-    throw std::out_of_range("Key not found in hash table");
+    // Key not found, throw an exception.
+    //throw std::out_of_range("Key not found in hash map");
+    return nullptr;
 }
 
-bool Contains(const K &key) {
-    int index = Hash(key, m_capacity, kMersennePrime);
-    int step = r_Hash(key, m_capacity, kMersennePrime);
-    Node *entry = table_[index];
-    while (entry != nullptr) {
-        if (entry->key == key) {
+PlayerNode* PlayersHashTable::getNode(int playerId){
+    int hash = Hash(playerId);
+    PlayerNode *cur = m_table[hash];
+    while (cur != nullptr) {
+        if (cur->m_playerId == playerId) {
+            return cur;
+        }
+        cur = cur->m_next;
+    }
+    // Key not found, throw an exception.
+    //throw std::out_of_range("Key not found in hash map");
+    return nullptr;
+}
+
+bool PlayersHashTable::Contains(int playerId) {
+    int hash = Hash(playerId);
+    PlayerNode *cur = m_table[hash];
+    while (cur != nullptr) {
+        if (cur->m_playerId == playerId) {
             return true;
         }
-        index = (index + step) % m_capacity;
-        entry = table_[index];
+        cur = cur->m_next;
     }
     return false;
 }
 
-void Remove(const K &key) {
-    int index = Hash(key, m_capacity, kMersennePrime);
-    int step = r_Hash(key, m_capacity, kMersennePrime);
-    Node *entry = table_[index];
-    if (entry == nullptr) {
-        return;
+
+void PlayersHashTable::resize(int newCapacity) {
+    PlayerNode** new_data = new PlayerNode*[newCapacity];
+    for (int i = 0; i < newCapacity; i++) {
+        new_data[i] = nullptr;
     }
-    if (entry->key == key) {
-        table_[index] = entry->next;
-        delete entry;
-        m_size--;
-        return;
-    }
-    while (entry->next != nullptr) {
-        if (entry->next->key == key) {
-            Node *temp = entry->next;
-            entry->next = entry->next->next;
-            delete temp;
-            m_size--;
-            return;
+    // Rehash all the key-value pairs into the new data array.
+    for (int i = 0; i < m_capacity; i++) {
+        PlayerNode* cur = m_table[i];
+        while (cur != nullptr) {
+            PlayerNode* next = cur->m_next;
+            int hash = Hash(cur->m_playerId);
+            cur->m_next = new_data[hash];
+            new_data[hash] = cur;
+            cur = next;
         }
-        index = (index + step) % m_capacity;
-        entry = entry->next;
     }
+    delete[] m_table;
+    m_table = new_data;
+    m_capacity = newCapacity;
 }
 
-};
+int PlayersHashTable::Hash(int teamId) const{
+    return teamId % m_capacity;
+}
