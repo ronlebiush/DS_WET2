@@ -34,8 +34,8 @@ private:
 public:
     std::shared_ptr<Team> findPlayersTeam(int playerId); //the UF find func
     void unionTeams(int buyerTeamId, int boughtTeamId); //the UF Union func
-    void insertTeam(int teamId,std::shared_ptr<Team> team);
-    void removeTeam(int teamId);
+    StatusType insertTeam(int teamId,std::shared_ptr<Team> team);
+    StatusType removeTeam(int teamId);
     void insertPlayer(int teamId,int playerId, std::shared_ptr<Player> player);
     std::shared_ptr<Player> getPlayer(int playerId);
     output_t<int> num_played_games_for_player(int playerId);

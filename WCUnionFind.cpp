@@ -48,15 +48,21 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
 
 
 
-void WCUnionFind::removeTeam(int teamId){
+StatusType WCUnionFind::removeTeam(int teamId){
+    if(!m_teams->keyExists(teamId))
+        return StatusType::FAILURE;
     PlayerNode* playerNode =m_teams->findValue(teamId)->getRootPlayer();
     if (playerNode)
         playerNode->m_team = nullptr;
     m_teams->remove(teamId);
+    return StatusType::SUCCESS;
 }
 
-void WCUnionFind::insertTeam(int teamId,std::shared_ptr<Team> team){
+StatusType WCUnionFind::insertTeam(int teamId,std::shared_ptr<Team> team){
+    if(m_teams->keyExists(teamId))
+        return StatusType::FAILURE;
     m_teams->insert(teamId,team);
+    return StatusType::SUCCESS;
 }
 
 

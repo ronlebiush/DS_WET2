@@ -32,7 +32,8 @@ public:
 
 
     ~Player();
-
+    permutation_t getSubSpirit();
+    void setSubSpirit(permutation_t subSpirit);
     int getPlayerId() const;
     int getTeamId() const;
     int getGamesPlayed() const;

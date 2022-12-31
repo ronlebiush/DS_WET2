@@ -16,11 +16,14 @@
 #define WORLDCUP23A2_H_
 
 #include "wet2util.h"
+#include "WCUnionFind.h"
 
 class world_cup_t {
 private:
 	//
 	// Here you may add anything you want
+    WCUnionFind m_teamsAndPlayers;
+    AVLTree<TeamKey,std::shared_ptr<Team>> m_teamsByAbility; //ability
 	//
 	
 public:
