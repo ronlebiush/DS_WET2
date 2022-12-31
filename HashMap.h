@@ -1,48 +1,43 @@
+
+
 template <typename K, typename V>
 class HashMap {
 public:
-    HashMap(int capacity) : capacity_(capacity), size_(0) {
-        data_ = new Node *[capacity];
+    HashMap(int capacity) : m_capacity(capacity), m_size(0) {
+        m_data = new Node *[capacity];
         for (int i = 0; i < capacity; i++) {
-            data_[i] = nullptr;
+            m_data[i] = nullptr;
         }
     }
 
     ~HashMap() {
-        for (int i = 0; i < capacity_; i++) {
-            Node *cur = data_[i];
+        for (int i = 0; i < m_capacity; i++) {
+            Node *cur = m_data[i];
             while (cur != nullptr) {
                 Node *next = cur->next;
                 delete cur;
                 cur = next;
             }
         }
-        delete[] data_;
+        delete[] m_data;
     }
 
     void Put(K key, V value) {
         // Increase the size of the hash map if the load factor exceeds 0.75.
-        if (static_cast<double>(size_) / capacity_ > 0.75) {
-            Resize(capacity_ * 2);
+        if (static_cast<double>(m_size) / m_capacity > 0.75) {
+            Resize(m_capacity * 2 + 1);
         }
         int hash = Hash(key);
-        Node *cur = data_[hash];
-        while (cur != nullptr) {
-            if (cur->key == key) {
-                cur->value = value;
-                return;
-            }
-            cur = cur->next;
-        }
-        // Key not found, add a new node.
-        Node *new_node = new Node{key, value, data_[hash]};
-        data_[hash] = new_node;
-        size_++;
+        Node * prev = m_data[hash];
+        Node *new_node = new Node{key, value, m_data[hash]};
+        m_data[hash] = new_node;
+        new_node->next = prev;
+        m_size++;
     }
 
     V Get(K key) {
         int hash = Hash(key);
-        Node *cur = data_[hash];
+        Node *cur = m_data[hash];
         while (cur != nullptr) {
             if (cur->key == key) {
                 return cur->value;
@@ -50,12 +45,12 @@ public:
             cur = cur->next;
         }
         // Key not found, throw an exception.
-        throw std::out_of_range("Key not found in hash map");
+        // throw std::out_of_range("Key not found in hash map");
     }
 
     bool Contains(K key) {
         int hash = Hash(key);
-        Node *cur = data_[hash];
+        Node *cur = m_data[hash];
         while (cur != nullptr) {
             if (cur->key == key) {
                 return true;
@@ -66,7 +61,7 @@ public:
     }
 
     int Size() {
-        return size_;
+        return m_size;
     }
     void Resize(int new_capacity) {
         Node** new_data = new Node*[new_capacity];
@@ -74,8 +69,8 @@ public:
             new_data[i] = nullptr;
         }
         // Rehash all the key-value pairs into the new data array.
-        for (int i = 0; i < capacity_; i++) {
-            Node* cur = data_[i];
+        for (int i = 0; i < m_capacity; i++) {
+            Node* cur = m_data[i];
             while (cur != nullptr) {
                 Node* next = cur->next;
                 int hash = Hash(cur->key);
@@ -84,9 +79,9 @@ public:
                 cur = next;
             }
         }
-        delete[] data_;
-        data_ = new_data;
-        capacity_ = new_capacity;
+        delete[] m_data;
+        m_data = new_data;
+        m_capacity = new_capacity;
     }
 
 
@@ -98,27 +93,12 @@ private:
     };
 
     int Hash(K key) {
-        // Implement a hash function here.
-        // You can use the std::hash function if it is available.
-        // Otherwise, you can implement your own hash function.
-
-        // For example, you can use the Jenkins hash function:
-        // https://en.wikipedia.org/wiki/Jenkins_hash_function
-        size_t hash = 0;
-        for (unsigned char c : key) {
-            hash += c;
-            hash += (hash << 10);
-            hash ^= (hash >> 6);
-        }
-        hash += (hash << 3);
-        hash ^= (hash >> 11);
-        hash += (hash << 15);
-        return hash % capacity_;
+        return key % m_capacity;
     }
 
-    Node** data_;
-    int capacity_;
-    int size_;
+    Node** m_data;
+    int m_capacity;
+    int m_size;
 };
 
 
