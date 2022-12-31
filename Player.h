@@ -2,7 +2,6 @@
 #ifndef WET1_PLAYER_H
 #define WET1_PLAYER_H
 
-#include "Team.h"
 #include "wet2util.h"
 
 
@@ -20,7 +19,7 @@ private:
 
 
 public:
-    Player(int playerId,permutation_t& spirit,int gamesPlayers,int ability,int m_cards,bool goalKeeper,);
+    Player(int playerId,permutation_t& spirit,int gamesPlayers,int ability,int m_cards,bool goalKeeper);
     ~Player();
 
     permutation_t& getSubSpirit();
