@@ -67,13 +67,17 @@ StatusType WCUnionFind::insertTeam(int teamId,std::shared_ptr<Team> team){
 
 
 
-std::shared_ptr<Player> WCUnionFind::getPlayer(int playerId){
-    return m_players.getPlayer(playerId);
-
+output_t<std::shared_ptr<Player>> WCUnionFind::getPlayer(int playerId){
+    if(m_players.Contains(playerId))
+        return m_players.getPlayer(playerId);
+    else
+        return StatusType::FAILURE;
 }
 
-void WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Player> player)
+StatusType WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Player> player)
 {
+    if(m_players.Contains(playerId))
+        return StatusType::FAILURE;
     m_players.insert( playerId,  std::move(player));   //O(1)
     PlayerNode* playerNode = m_players.getNode(playerId);       //O(1)
     std::shared_ptr<Team> playerTeam = m_teams->findValue(teamId); //O(log k)
@@ -93,6 +97,7 @@ void WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Player> 
         playerNode->m_player->setSubSpirit(newSpirit);
         playerTeam->setSpirit(newTeamSpirit);
     }
+    return StatusType::SUCCESS;
 
 }
 
@@ -127,14 +132,15 @@ std::shared_ptr<Team> WCUnionFind::findPlayersTeam(int playerId) {
         gamesSum -= currentPlayerGames;
         spiritSum = spiritSum * currentPlayerSpirit.inv();
     }
-    return rootNode->m_team;
+    //return rootNode->m_team;
+    std::shared_ptr<Team> team = rootNode->m_team;
+    return team;
 
 }
 
 
 
 output_t<int> WCUnionFind::num_played_games_for_player(int playerId){
-    //Find player in array
     if (!m_players.Contains(playerId))
         return StatusType::FAILURE;
     findPlayersTeam(playerId);
@@ -144,6 +150,7 @@ output_t<int> WCUnionFind::num_played_games_for_player(int playerId){
     return playerNode->m_player->getGamesPlayed();
 
 }
+
 output_t<permutation_t> WCUnionFind::get_partial_spirit(int playerId){
     if (!m_players.Contains(playerId))
         return StatusType::FAILURE;

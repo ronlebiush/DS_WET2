@@ -5,7 +5,7 @@
 #include "Player.h"
 
 
-Player :: Player(int playerId,permutation_t& spirit,int gamesPlayed,int ability,int cards,bool goalKeeper):
+Player :: Player(int playerId,const permutation_t& spirit,int gamesPlayed,int ability,int cards,bool goalKeeper):
                     m_playerId(playerId),m_spirit(spirit),m_gamesPlayed(gamesPlayed),m_ability(ability),m_cards(cards),m_goalKeeper(goalKeeper){}
 
 
@@ -75,9 +75,9 @@ bool Player :: operator==(const Player& other)const
         return false;
 }
 
-permutation_t& Player::getSubSpirit(){
+permutation_t Player::getSubSpirit(){
     return m_spirit;
 }
-void Player::setSubSpirit(permutation_t& subSpirit){
+void Player::setSubSpirit(permutation_t subSpirit){
     m_spirit=subSpirit;
 }

@@ -19,11 +19,11 @@ private:
 
 
 public:
-    Player(int playerId,permutation_t& spirit,int gamesPlayers,int ability,int m_cards,bool goalKeeper);
+    Player(int playerId,const permutation_t& spirit,int gamesPlayed,int ability,int cards,bool goalKeeper);
     ~Player();
 
-    permutation_t& getSubSpirit();
-    void setSubSpirit(permutation_t& subSpirit);
+    permutation_t getSubSpirit();
+    void setSubSpirit(permutation_t subSpirit);
     int getPlayerId() const;
     int getGamesPlayed() const;
     int getCards() const;

@@ -36,8 +36,9 @@ public:
     void unionTeams(int buyerTeamId, int boughtTeamId); //the UF Union func
     StatusType insertTeam(int teamId,std::shared_ptr<Team> team);
     StatusType removeTeam(int teamId);
-    void insertPlayer(int teamId,int playerId, std::shared_ptr<Player> player);
-    std::shared_ptr<Player> getPlayer(int playerId);
+    output_t<std::shared_ptr<Team>> getTeam(int teamId);
+    StatusType insertPlayer(int teamId,int playerId, std::shared_ptr<Player> player);
+    output_t<std::shared_ptr<Player>> getPlayer(int playerId);
     output_t<int> num_played_games_for_player(int playerId);
     output_t<permutation_t> get_partial_spirit(int playerId);
 

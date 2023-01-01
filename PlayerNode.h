@@ -7,6 +7,8 @@
 
 #include <memory>
 #include "Team.h"
+#include "Player.h"
+
 
 class PlayerNode{
 public:
@@ -16,12 +18,6 @@ public:
     std::shared_ptr<Player> m_player;
     int size;
     PlayerNode* m_next;
-    explicit PlayerNode(int playerId,std::shared_ptr<Player> player,PlayerNode* next):
-        m_dady(nullptr),
-        m_team(nullptr),
-        m_playerId(playerId),
-        m_player(std::move(player)),
-        size(1),
-        m_next(next){}
+    explicit PlayerNode(int playerId,std::shared_ptr<Player> player,PlayerNode* next);
 };
 #endif //WET2_PLAYERNODE_H
