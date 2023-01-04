@@ -162,6 +162,8 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
     output_t<std::shared_ptr<Player>> output_t_Player = m_teamsAndPlayers.getPlayer(playerId);
     if(output_t_Player.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
+    if(m_teamsAndPlayers.findPlayersTeam(playerId)== nullptr)
+        return StatusType::FAILURE;
     output_t_Player.ans()->setCards(output_t_Player.ans()->getCards()+cards);
     m_teamsAndPlayers.findPlayersTeam(playerId);//for log*n
     return StatusType::SUCCESS;
