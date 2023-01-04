@@ -177,6 +177,8 @@ output_t<int> world_cup_t::get_player_cards(int playerId) // O(1) Average
 
 output_t<int> world_cup_t::get_team_points(int teamId) //  O(log(k)) worst case
 {
+    if (teamId <= 0)
+        return StatusType::INVALID_INPUT;
     output_t<std::shared_ptr<Team>> output_tTeam = m_teamsAndPlayers.getTeam(teamId);
     if(output_tTeam.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
@@ -185,6 +187,8 @@ output_t<int> world_cup_t::get_team_points(int teamId) //  O(log(k)) worst case
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
+    if (i < 0)
+        return StatusType::INVALID_INPUT;
     try{
         std::shared_ptr<Team> team = m_teamsByAbility.findByRank(i+1);
         return team->getTeamId();
@@ -198,11 +202,15 @@ output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
+    if (playerId <= 0)
+        return StatusType::INVALID_INPUT;
     return m_teamsAndPlayers.get_partial_spirit(playerId);
 }
 
 StatusType world_cup_t::buy_team(int teamId1, int teamId2) //(int buyerTeamId, int boughtTeamId)
 {
+    if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2)
+        return StatusType::INVALID_INPUT;
     output_t<std::shared_ptr<Team>> output_t_buyerTeam = m_teamsAndPlayers.getTeam(teamId1);
     if(output_t_buyerTeam.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
