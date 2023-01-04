@@ -27,7 +27,7 @@ public:
     void insert(int playerId, std::shared_ptr<Player> player);
     std::shared_ptr<Player> getPlayer(int playerId) ;
     PlayerNode* getNode(int playerId);
-    bool Contains(int playerId) ;
+    bool Contains(int playerId)const ;
     //void Remove(const int playerId);
 };
 

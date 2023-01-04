@@ -41,8 +41,8 @@ StatusType world_cup_t::remove_team(int teamId)// O(log(k))
         TeamKey keyToRemove = teamToRemove.ans()->getTeamKey();
         m_teamsByAbility.remove(keyToRemove);
         StatusType status = m_teamsAndPlayers.removeTeam(teamId);
-        if(status!= StatusType::SUCCESS)
-            return status;
+
+        return status;
     }
     catch (std::bad_alloc& ba)
     {
@@ -66,6 +66,9 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
     output_t<std::shared_ptr<Team>> output_tTeam = m_teamsAndPlayers.getTeam(teamId);
     if(output_tTeam.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
+    if(m_teamsAndPlayers.playerExist(playerId)){
+        return StatusType::FAILURE;
+    }
     m_teamsByAbility.remove(output_tTeam.ans()->getTeamKey());
 
     std::shared_ptr<Player> player = std::make_shared<Player>(playerId,spirit,gamesPlayed,ability,cards,goalKeeper);
@@ -122,7 +125,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) //  O(log(k)) wo
     output_t<std::shared_ptr<Team>> output_t_team2 = m_teamsAndPlayers.getTeam(teamId2);
     if(output_t_team2.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
-    if ((!output_t_team1.ans()->isTeamKosher()) || (!output_t_team1.ans()->isTeamKosher()))
+    if ((!output_t_team1.ans()->isTeamKosher()) || (!output_t_team2.ans()->isTeamKosher()))
     {
         return StatusType::FAILURE;
     }

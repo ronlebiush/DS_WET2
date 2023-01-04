@@ -24,10 +24,10 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
         boughtRootPlayer->m_dady = buyerRootPlayer;
         boughtRootPlayer->m_player->setGamesPlayed(newPlayedGames);
         //r(b) += h(a) -r(a)
-        permutation_t newSpirit = buyerRootPlayer->m_player->getSubSpirit().inv() *buyerRootPlayer->m_team->getSpirit() * boughtRootPlayer->m_player->getSubSpirit();
+        permutation_t newSpirit =   boughtRootPlayer->m_player->getSubSpirit()*buyerRootPlayer->m_team->getSpirit() * buyerRootPlayer->m_player->getSubSpirit().inv() ;
         boughtRootPlayer->m_player->setSubSpirit(newSpirit);
         buyerRootPlayer->size += boughtRootPlayer->size;
-        buyerRootPlayer->m_team->setSpirit(buyerRootPlayer->m_team->getSpirit()*boughtRootPlayer->m_team->getSpirit());
+        buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
         boughtRootPlayer->m_team.reset();
 
     }
@@ -37,10 +37,10 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
         buyerRootPlayer->m_player->setGamesPlayed(-newPlayedGames);
         //r(a) -= r(b)
         //r(b) += H(a)
-        buyerRootPlayer->m_player->setSubSpirit(boughtRootPlayer->m_player->getSubSpirit().inv() *buyerRootPlayer->m_player->getSubSpirit());
-        boughtRootPlayer->m_player->setSubSpirit(boughtRootPlayer->m_player->getSubSpirit() *buyerRootPlayer->m_team->getSpirit());
+        buyerRootPlayer->m_player->setSubSpirit(buyerRootPlayer->m_player->getSubSpirit() *boughtRootPlayer->m_player->getSubSpirit().inv() );
+        boughtRootPlayer->m_player->setSubSpirit(buyerRootPlayer->m_team->getSpirit() * boughtRootPlayer->m_player->getSubSpirit() );
         boughtRootPlayer->size += buyerRootPlayer->size;
-        buyerRootPlayer->m_team->setSpirit(buyerRootPlayer->m_team->getSpirit()*boughtRootPlayer->m_team->getSpirit());
+        buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
         boughtRootPlayer->m_team.reset();
         boughtRootPlayer->m_team = buyerRootPlayer->m_team;
     }
@@ -95,12 +95,12 @@ StatusType WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Pl
         playerTeam->setAbility(playerTeam->getTeamAbility() + player->getAbility());
     }
     else{
-        permutation_t newTeamSpirit = playerTeam->getSpirit()*playerNode->m_player->getSubSpirit();
+        permutation_t newTeamSpirit =playerNode->m_player->getSubSpirit()* playerTeam->getSpirit();
         rootPlayer->size++;
         playerNode->m_dady = rootPlayer;
         playerNode->m_player->setGamesPlayed(playerNode->m_player->getGamesPlayed()-rootPlayer->m_player->getGamesPlayed());
         //r(b) += h(a) -r(a)
-        permutation_t newSpirit = rootPlayer->m_player->getSubSpirit().inv() *rootPlayer->m_team->getSpirit() * playerNode->m_player->getSubSpirit();
+        permutation_t newSpirit = playerNode->m_player->getSubSpirit()*rootPlayer->m_team->getSpirit()*rootPlayer->m_player->getSubSpirit().inv() ;
         playerNode->m_player->setSubSpirit(newSpirit);
         playerTeam->setSpirit(newTeamSpirit);
         if(player->getGoalKeeper())
@@ -177,4 +177,11 @@ output_t<std::shared_ptr<Team>> WCUnionFind:: getTeam(int teamId){
    {return StatusType::FAILURE;}
    return m_teams.findValue(teamId);
 
+}
+
+bool WCUnionFind::playerExist(int playerId)const{
+    return m_players.Contains(playerId);
+}
+bool WCUnionFind::teamExist(int teamId) const{
+    return m_teams.keyExists(teamId);
 }

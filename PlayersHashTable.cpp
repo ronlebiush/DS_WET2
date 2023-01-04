@@ -62,7 +62,7 @@ PlayerNode* PlayersHashTable::getNode(int playerId){
     return nullptr;
 }
 
-bool PlayersHashTable::Contains(int playerId) {
+bool PlayersHashTable::Contains(int playerId)const {
     int hash = Hash(playerId);
     PlayerNode *cur = m_table[hash];
     while (cur != nullptr) {

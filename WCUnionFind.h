@@ -13,18 +13,6 @@
 //#include "HashMap.h"
 #include "PlayerNode.h"
 
-//class PlayerNode{
-//public:
-//    PlayerNode* m_dady;
-//    std::shared_ptr<Team> m_team;
-//    std::shared_ptr<Player> m_player;
-//    int size;
-//    PlayerNode* m_next;
-//    explicit PlayerNode(std::shared_ptr<Player> player): m_dady(nullptr), m_team(nullptr),m_player(std::move(player)), size(1),m_next(
-//            nullptr){}
-//};
-
-
 
 class WCUnionFind {
 private:
@@ -42,7 +30,8 @@ public:
     output_t<std::shared_ptr<Player>> getPlayer(int playerId);
     output_t<int> num_played_games_for_player(int playerId);
     output_t<permutation_t> get_partial_spirit(int playerId);
-
+    bool playerExist(int playerId) const;
+    bool teamExist(int playerId) const;
 
 
 };
