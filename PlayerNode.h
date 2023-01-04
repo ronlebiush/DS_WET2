@@ -9,6 +9,8 @@
 #include "Team.h"
 #include "Player.h"
 
+class Team;
+
 
 class PlayerNode{
 public:

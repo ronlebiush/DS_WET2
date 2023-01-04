@@ -7,6 +7,8 @@
 #include "PlayerNode.h"
 
 
+class PlayerNode;
+
 class Team{
 private:
     int m_TeamId;
@@ -30,12 +32,16 @@ public:
     //Getters &setters
     int getTeamId() const;
     int getTeamPoints()const;
+    int getGoaKeeperCount()const;
+    int getTeamAbility()const;
     void setTeamId(int id);
     void setTeamPoints(int points);
     permutation_t& getSpirit();
     void setSpirit(const permutation_t& TeamSpirit);
     PlayerNode* getRootPlayer();
     void setRootPlayer(PlayerNode* playerNode);
+    void setGoaKeeperCount(int i);
+    void setAbility(int i);
     TeamKey& getTeamKey();
 
     void playGame();

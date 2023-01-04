@@ -68,9 +68,6 @@ void AVLTree<K,V> ::fixHeightForAllNodes(node<K, V> *cur) {
 
 
 
-
-
-
 template<class K,class V>
 node<K,V>* AVLTree<K,V> ::findByRankHelper(node<K, V> *cur, const int i) const {
     if(!cur)
@@ -80,7 +77,7 @@ node<K,V>* AVLTree<K,V> ::findByRankHelper(node<K, V> *cur, const int i) const {
     {
         return cur;
     }
-    //if the node don't have left son amd it was found
+    //if the node don't have left son and it was found
     else if(!cur->getLeftSon() && i == 1)
     {
         return cur;
@@ -95,6 +92,8 @@ node<K,V>* AVLTree<K,V> ::findByRankHelper(node<K, V> *cur, const int i) const {
     {
         return findByRankHelper(cur->getRightSon() , i - cur->getLeftSon()->getNumOfNodesInSubWood()-1);
     }
+    return nullptr;
+
 
 }
 

@@ -16,16 +16,24 @@ Team::Team(int teamId, int points):
         m_rootPlayer(nullptr),
         m_teamSpirit(),
         m_key(m_TeamAbility,teamId)
-        {}
+{}
 
 
 
 int Team::getTeamId() const{return m_TeamId;}
 int Team::getTeamPoints()const {return m_TeamPoints;}
+PlayerNode* Team::getRootPlayer() {return m_rootPlayer;}
+permutation_t& Team::getSpirit() {return m_teamSpirit;}
+TeamKey& Team::getTeamKey() {return *(new TeamKey(m_TeamAbility , m_TeamId));}
+int Team::getGoaKeeperCount() const {return m_goaKeeperCount;}
+int Team::getTeamAbility() const {return m_TeamAbility;}
 
 void Team::setTeamId(int id){ m_TeamId=id;}
 void Team::setTeamPoints(int points){m_TeamPoints=points;}
-
+void Team::setSpirit(const permutation_t &TeamSpirit) {m_teamSpirit = TeamSpirit;}
+void Team::setRootPlayer(PlayerNode *playerNode) {m_rootPlayer = playerNode;}
+void Team::setGoaKeeperCount(int i) {m_goaKeeperCount = i;}
+void Team::setAbility(int i) {m_TeamAbility = i;}
 
 
 
@@ -54,4 +62,3 @@ int Team::getScore() const {
 bool Team::isEmpty() const {
     return m_rootPlayer== nullptr;
 }
-

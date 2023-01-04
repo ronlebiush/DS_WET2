@@ -6,10 +6,13 @@
 
 #include <utility>
 
+
+WCUnionFind::WCUnionFind() = default;
+
 void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
 {
-    std::shared_ptr<Team> buyerTeam = m_teams->findValue(buyerTeamId);
-    std::shared_ptr<Team> boughtTeam = m_teams->findValue(boughtTeamId);
+    std::shared_ptr<Team> buyerTeam = m_teams.findValue(buyerTeamId);
+    std::shared_ptr<Team> boughtTeam = m_teams.findValue(boughtTeamId);
 
     PlayerNode* buyerRootPlayer= buyerTeam->getRootPlayer();
     PlayerNode* boughtRootPlayer= boughtTeam->getRootPlayer();
@@ -49,19 +52,19 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
 
 
 StatusType WCUnionFind::removeTeam(int teamId){
-    if(!m_teams->keyExists(teamId))
+    if(!m_teams.keyExists(teamId))
         return StatusType::FAILURE;
-    PlayerNode* playerNode =m_teams->findValue(teamId)->getRootPlayer();
+    PlayerNode* playerNode =m_teams.findValue(teamId)->getRootPlayer();
     if (playerNode)
         playerNode->m_team = nullptr;
-    m_teams->remove(teamId);
+    m_teams.remove(teamId);
     return StatusType::SUCCESS;
 }
 
 StatusType WCUnionFind::insertTeam(int teamId,std::shared_ptr<Team> team){
-    if(m_teams->keyExists(teamId))
+    if(m_teams.keyExists(teamId))
         return StatusType::FAILURE;
-    m_teams->insert(teamId,team);
+    m_teams.insert(teamId,team);
     return StatusType::SUCCESS;
 }
 
@@ -78,14 +81,18 @@ StatusType WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Pl
 {
     if(m_players.Contains(playerId))
         return StatusType::FAILURE;
-    m_players.insert( playerId,  std::move(player));   //O(1)
+    m_players.insert( playerId,  player);   //O(1)
     PlayerNode* playerNode = m_players.getNode(playerId);       //O(1)
-    std::shared_ptr<Team> playerTeam = m_teams->findValue(teamId); //O(log k)
+    std::shared_ptr<Team> playerTeam = m_teams.findValue(teamId); //O(log k)
     PlayerNode* rootPlayer = playerTeam->getRootPlayer();
     if (!rootPlayer){
         playerNode->m_dady = nullptr;
+        playerNode->m_team = playerTeam;
         playerTeam->setRootPlayer(playerNode);
         playerTeam->setSpirit(playerNode->m_player->getSubSpirit());
+        if(player->getGoalKeeper())
+        {playerTeam->setGoaKeeperCount(playerTeam->getGoaKeeperCount()+1);}
+        playerTeam->setAbility(playerTeam->getTeamAbility() + player->getAbility());
     }
     else{
         permutation_t newTeamSpirit = playerTeam->getSpirit()*playerNode->m_player->getSubSpirit();
@@ -96,6 +103,9 @@ StatusType WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Pl
         permutation_t newSpirit = rootPlayer->m_player->getSubSpirit().inv() *rootPlayer->m_team->getSpirit() * playerNode->m_player->getSubSpirit();
         playerNode->m_player->setSubSpirit(newSpirit);
         playerTeam->setSpirit(newTeamSpirit);
+        if(player->getGoalKeeper())
+        {playerTeam->setGoaKeeperCount(playerTeam->getGoaKeeperCount()+1);}
+        playerTeam->setAbility(playerTeam->getTeamAbility() + player->getAbility());
     }
     return StatusType::SUCCESS;
 
@@ -115,7 +125,7 @@ std::shared_ptr<Team> WCUnionFind::findPlayersTeam(int playerId) {
     {
         gamesSum += nodeIterator->m_player->getGamesPlayed();
         spiritSum = spiritSum * nodeIterator->m_dady->m_player->getSubSpirit();
-        playerNode = nodeIterator->m_dady;
+        nodeIterator = nodeIterator->m_dady;
     }
     PlayerNode *rootNode = nodeIterator;
     nodeIterator = playerNode;
@@ -131,6 +141,7 @@ std::shared_ptr<Team> WCUnionFind::findPlayersTeam(int playerId) {
 
         gamesSum -= currentPlayerGames;
         spiritSum = spiritSum * currentPlayerSpirit.inv();
+        nodeIterator = nodeIterator->m_dady;
     }
     //return rootNode->m_team;
     std::shared_ptr<Team> team = rootNode->m_team;
@@ -161,4 +172,9 @@ output_t<permutation_t> WCUnionFind::get_partial_spirit(int playerId){
     return playerNode->m_player->getSubSpirit();
 }
 
+output_t<std::shared_ptr<Team>> WCUnionFind:: getTeam(int teamId){
+   if(!m_teams.keyExists(teamId))
+   {return StatusType::FAILURE;}
+   return m_teams.findValue(teamId);
 
+}

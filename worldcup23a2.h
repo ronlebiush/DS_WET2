@@ -18,45 +18,46 @@
 #include "wet2util.h"
 #include "WCUnionFind.h"
 
+
 class world_cup_t {
 private:
-	//
-	// Here you may add anything you want
+    //
+    // Here you may add anything you want
     WCUnionFind m_teamsAndPlayers;
     AVLTree<TeamKey,std::shared_ptr<Team>> m_teamsByAbility; //ability
-	//
-	
+    //
+
 public:
-	// <DO-NOT-MODIFY> {
-	
-	world_cup_t();
-	virtual ~world_cup_t();
-	
-	StatusType add_team(int teamId);
-	
-	StatusType remove_team(int teamId);
-	
-	StatusType add_player(int playerId, int teamId,
-	                      const permutation_t &spirit, int gamesPlayed,
-	                      int ability, int cards, bool goalKeeper);
-	
-	output_t<int> play_match(int teamId1, int teamId2);
-	
-	output_t<int> num_played_games_for_player(int playerId);
-	
-	StatusType add_player_cards(int playerId, int cards);
-	
-	output_t<int> get_player_cards(int playerId);
-	
-	output_t<int> get_team_points(int teamId);
-	
-	output_t<int> get_ith_pointless_ability(int i);
-	
-	output_t<permutation_t> get_partial_spirit(int playerId);
-	
-	StatusType buy_team(int teamId1, int teamId2);
-	
-	// } </DO-NOT-MODIFY>
+    // <DO-NOT-MODIFY> {
+
+    world_cup_t();
+    virtual ~world_cup_t();
+
+    StatusType add_team(int teamId);
+
+    StatusType remove_team(int teamId);
+
+    StatusType add_player(int playerId, int teamId,
+                          const permutation_t &spirit, int gamesPlayed,
+                          int ability, int cards, bool goalKeeper);
+
+    output_t<int> play_match(int teamId1, int teamId2);
+
+    output_t<int> num_played_games_for_player(int playerId);
+
+    StatusType add_player_cards(int playerId, int cards);
+
+    output_t<int> get_player_cards(int playerId);
+
+    output_t<int> get_team_points(int teamId);
+
+    output_t<int> get_ith_pointless_ability(int i);
+
+    output_t<permutation_t> get_partial_spirit(int playerId);
+
+    StatusType buy_team(int teamId1, int teamId2);
+
+    // } </DO-NOT-MODIFY>
 };
 
 #endif // WORLDCUP23A1_H_

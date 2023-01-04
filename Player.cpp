@@ -6,7 +6,7 @@
 
 
 Player :: Player(int playerId,const permutation_t& spirit,int gamesPlayed,int ability,int cards,bool goalKeeper):
-                    m_playerId(playerId),m_spirit(spirit),m_gamesPlayed(gamesPlayed),m_ability(ability),m_cards(cards),m_goalKeeper(goalKeeper){}
+        m_playerId(playerId),m_spirit(spirit),m_gamesPlayed(gamesPlayed),m_ability(ability),m_cards(cards),m_goalKeeper(goalKeeper){}
 
 
 Player ::~Player() =default;
@@ -22,6 +22,9 @@ int Player ::  getGamesPlayed() const
     return m_gamesPlayed;
 }
 
+int Player::getAbility() const {
+    return m_ability;
+}
 
 int Player ::  getCards() const
 {

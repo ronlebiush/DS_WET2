@@ -70,12 +70,12 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
 
     std::shared_ptr<Player> player = std::make_shared<Player>(playerId,spirit,gamesPlayed,ability,cards,goalKeeper);
     if(m_teamsAndPlayers.insertPlayer(teamId,playerId,player)!=StatusType::SUCCESS) {
-        m_teamsByAbility.insert(output_tTeam.ans()->getTeamKey(),output_tTeam.ans());
         return StatusType::FAILURE;
     }
-    std::shared_ptr<Team> teamOfPlayer= m_teamsAndPlayers.findPlayersTeam(playerId);
 
-	return StatusType::SUCCESS;
+    m_teamsByAbility.insert(output_tTeam.ans()->getTeamKey(),output_tTeam.ans());
+    std::shared_ptr<Team> teamOfPlayer= m_teamsAndPlayers.findPlayersTeam(playerId);
+    return StatusType::SUCCESS;
 }
 
 //enum struct MatchStatus {
@@ -127,7 +127,7 @@ output_t<int> world_cup_t::play_match(int teamId1, int teamId2) //  O(log(k)) wo
         return StatusType::FAILURE;
     }
     output_t_team1.ans()->playGame();
-    output_t_team1.ans()->playGame();
+    output_t_team2.ans()->playGame();
     MatchStatus matchStatus = getMatchStatus(output_t_team1.ans(),output_t_team2.ans());
     switch(matchStatus)
     {
@@ -149,7 +149,7 @@ output_t<int> world_cup_t::num_played_games_for_player(int playerId) // O(log*(n
 {
     if (playerId <= 0)
         return StatusType::INVALID_INPUT;
-    return m_teamsAndPlayers.num_played_games_for_player(playerId)
+    return m_teamsAndPlayers.num_played_games_for_player(playerId);
 }
 
 StatusType world_cup_t::add_player_cards(int playerId, int cards)
@@ -161,7 +161,7 @@ StatusType world_cup_t::add_player_cards(int playerId, int cards)
         return StatusType::FAILURE;
     output_t_Player.ans()->setCards(output_t_Player.ans()->getCards()+cards);
     m_teamsAndPlayers.findPlayersTeam(playerId);//for log*n
-	return StatusType::SUCCESS;
+    return StatusType::SUCCESS;
 }
 
 output_t<int> world_cup_t::get_player_cards(int playerId) // O(1) Average
@@ -180,13 +180,20 @@ output_t<int> world_cup_t::get_team_points(int teamId) //  O(log(k)) worst case
     output_t<std::shared_ptr<Team>> output_tTeam = m_teamsAndPlayers.getTeam(teamId);
     if(output_tTeam.status() == StatusType::FAILURE )
         return StatusType::FAILURE;
-	return output_tTeam.ans()->getTeamPoints();
+    return output_tTeam.ans()->getTeamPoints();
 }
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    std::shared_ptr<Team> team = m_teamsByAbility.findByRank(i);
-    return team->getTeamId();
+    try{
+        std::shared_ptr<Team> team = m_teamsByAbility.findByRank(i+1);
+        return team->getTeamId();
+    }
+    catch ( RankIsNotInRange&)
+    {
+        return StatusType::FAILURE;
+    }
+
 }
 
 output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)

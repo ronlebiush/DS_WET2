@@ -28,10 +28,11 @@
 
 class WCUnionFind {
 private:
-    AVLTree<int,std::shared_ptr<Team>>* m_teams; //sets
+    AVLTree<int,std::shared_ptr<Team>> m_teams; //sets
     PlayersHashTable m_players;
     //HashMap<int,std::shared_ptr<Player>>* m_players; //items
 public:
+    WCUnionFind();
     std::shared_ptr<Team> findPlayersTeam(int playerId); //the UF find func
     void unionTeams(int buyerTeamId, int boughtTeamId); //the UF Union func
     StatusType insertTeam(int teamId,std::shared_ptr<Team> team);

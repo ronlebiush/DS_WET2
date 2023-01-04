@@ -77,11 +77,13 @@ bool PlayersHashTable::Contains(int playerId) {
 
 void PlayersHashTable::resize(int newCapacity) {
     PlayerNode** new_data = new PlayerNode*[newCapacity];
+    int oldCapacity = m_capacity;
+    m_capacity = newCapacity;
     for (int i = 0; i < newCapacity; i++) {
         new_data[i] = nullptr;
     }
     // Rehash all the key-value pairs into the new data array.
-    for (int i = 0; i < m_capacity; i++) {
+    for (int i = 0; i < oldCapacity; i++) {
         PlayerNode* cur = m_table[i];
         while (cur != nullptr) {
             PlayerNode* next = cur->m_next;

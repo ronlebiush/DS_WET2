@@ -14,9 +14,9 @@ public:
     TeamKey(int ability , int teamID);
     int getAbility() const;
     int getTeamID() const;
+    bool  operator<(const TeamKey& other) const;
+    bool  operator==(const TeamKey& other) const;
     bool  operator>(const TeamKey& other) const;
-
-
 };
 
 

@@ -28,6 +28,7 @@ public:
     int getGamesPlayed() const;
     int getCards() const;
     bool getGoalKeeper() const;
+    int getAbility()const;
     void setPlayerId(int playerId);
     void setGamesPlayed(int gamesPlayed);
     void setCards(int cards);
