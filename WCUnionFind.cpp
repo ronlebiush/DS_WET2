@@ -95,12 +95,12 @@ StatusType WCUnionFind::insertPlayer(int teamId,int playerId, std::shared_ptr<Pl
         playerTeam->setAbility(playerTeam->getTeamAbility() + player->getAbility());
     }
     else{
-        permutation_t newTeamSpirit =playerNode->m_player->getSubSpirit()* playerTeam->getSpirit();
+        permutation_t newTeamSpirit = playerTeam->getSpirit()*playerNode->m_player->getSubSpirit();
         rootPlayer->size++;
         playerNode->m_dady = rootPlayer;
         playerNode->m_player->setGamesPlayed(playerNode->m_player->getGamesPlayed()-rootPlayer->m_player->getGamesPlayed());
         //r(b) += h(a) -r(a)
-        permutation_t newSpirit = playerNode->m_player->getSubSpirit()*rootPlayer->m_team->getSpirit()*rootPlayer->m_player->getSubSpirit().inv() ;
+        permutation_t newSpirit = rootPlayer->m_player->getSubSpirit().inv()*rootPlayer->m_team->getSpirit()*playerNode->m_player->getSubSpirit() ;//= rootPlayer->m_player->getSubSpirit().inv()*newTeamSpirit
         playerNode->m_player->setSubSpirit(newSpirit);
         playerTeam->setSpirit(newTeamSpirit);
         if(player->getGoalKeeper())
@@ -124,7 +124,7 @@ std::shared_ptr<Team> WCUnionFind::findPlayersTeam(int playerId) {
     while (nodeIterator->m_dady)//sum branch
     {
         gamesSum += nodeIterator->m_player->getGamesPlayed();
-        spiritSum = spiritSum * nodeIterator->m_dady->m_player->getSubSpirit();
+        spiritSum = nodeIterator->m_player->getSubSpirit()*spiritSum;
         nodeIterator = nodeIterator->m_dady;
     }
     PlayerNode *rootNode = nodeIterator;
@@ -168,7 +168,7 @@ output_t<permutation_t> WCUnionFind::get_partial_spirit(int playerId){
     findPlayersTeam(playerId);
     PlayerNode* playerNode = m_players.getNode(playerId);
     if(playerNode->m_dady)
-        return playerNode->m_player->getSubSpirit()*playerNode->m_dady->m_player->getSubSpirit();
+        return playerNode->m_dady->m_player->getSubSpirit()*playerNode->m_player->getSubSpirit();
     return playerNode->m_player->getSubSpirit();
 }
 
