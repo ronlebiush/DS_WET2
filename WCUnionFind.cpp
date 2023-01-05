@@ -16,6 +16,7 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
     PlayerNode* buyerRootPlayer= buyerTeam->getRootPlayer();
     PlayerNode* boughtRootPlayer= boughtTeam->getRootPlayer();
     if(!boughtRootPlayer){
+        m_teams.remove(boughtTeamId);
         return;
     }
     if(!buyerRootPlayer){ // && boughtTeam
