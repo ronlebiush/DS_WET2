@@ -20,6 +20,9 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
     }
     if(!buyerRootPlayer){ // && boughtTeam
         buyerTeam->setRootPlayer(boughtTeam->getRootPlayer());
+        buyerTeam->setSpirit(boughtTeam->getSpirit());
+        m_teams.remove(boughtTeamId);
+        return;
     }
 
 //fix order
