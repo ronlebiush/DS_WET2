@@ -230,7 +230,7 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) //(int buyerTeamId, i
     m_teamsAndPlayers.unionTeams(teamId1,teamId2);
     output_t_buyerTeam.ans()->setTeamPoints(output_t_buyerTeam.ans()->getTeamPoints()+output_t_boughtTeam.ans()->getTeamPoints());
     output_t_buyerTeam.ans()->setAbility(output_t_buyerTeam.ans()->getTeamAbility()+output_t_boughtTeam.ans()->getTeamAbility());
-
+    output_t_buyerTeam.ans()->setGoaKeeperCount(output_t_buyerTeam.ans()->getGoaKeeperCount()+output_t_boughtTeam.ans()->getGoaKeeperCount());
     m_teamsByAbility.insert(output_t_buyerTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
     //m_teamsByAbility.insert(output_t_boughtTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
 
