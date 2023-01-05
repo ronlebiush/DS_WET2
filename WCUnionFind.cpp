@@ -23,6 +23,7 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
         buyerTeam->setRootPlayer(boughtTeam->getRootPlayer());
         buyerTeam->setSpirit(boughtTeam->getSpirit());
         m_teams.remove(boughtTeamId);
+        boughtRootPlayer->m_team = buyerTeam;
         return;
     }
 
