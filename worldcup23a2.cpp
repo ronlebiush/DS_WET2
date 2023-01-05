@@ -209,6 +209,8 @@ output_t<permutation_t> world_cup_t::get_partial_spirit(int playerId)
 {
     if (playerId <= 0)
         return StatusType::INVALID_INPUT;
+    if(m_teamsAndPlayers.findPlayersTeam(playerId)== nullptr)
+        return StatusType::FAILURE;
     return m_teamsAndPlayers.get_partial_spirit(playerId);
 }
 
@@ -226,9 +228,11 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) //(int buyerTeamId, i
     m_teamsByAbility.remove(output_t_boughtTeam.ans()->getTeamKey());
 
     m_teamsAndPlayers.unionTeams(teamId1,teamId2);
+    output_t_buyerTeam.ans()->setTeamPoints(output_t_buyerTeam.ans()->getTeamPoints()+output_t_boughtTeam.ans()->getTeamPoints());
+    output_t_buyerTeam.ans()->setAbility(output_t_buyerTeam.ans()->getTeamAbility()+output_t_boughtTeam.ans()->getTeamAbility());
 
     m_teamsByAbility.insert(output_t_buyerTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
-    m_teamsByAbility.insert(output_t_boughtTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
+    //m_teamsByAbility.insert(output_t_boughtTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
 
 
 

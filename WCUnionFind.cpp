@@ -13,22 +13,28 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
 {
     std::shared_ptr<Team> buyerTeam = m_teams.findValue(buyerTeamId);
     std::shared_ptr<Team> boughtTeam = m_teams.findValue(boughtTeamId);
-
     PlayerNode* buyerRootPlayer= buyerTeam->getRootPlayer();
     PlayerNode* boughtRootPlayer= boughtTeam->getRootPlayer();
+    if(!boughtRootPlayer){
+        return;
+    }
+    if(!buyerRootPlayer){ // && boughtTeam
+        buyerTeam->setRootPlayer(boughtTeam->getRootPlayer());
+    }
 
-    permutation_t newTeamSpirit = boughtTeam->getSpirit()*buyerTeam->getSpirit();
+//fix order
+    permutation_t newTeamSpirit = buyerTeam->getSpirit()*boughtTeam->getSpirit();
     int newPlayedGames = boughtRootPlayer->m_player->getGamesPlayed()-buyerRootPlayer->m_player->getGamesPlayed();
     if (buyerRootPlayer->size > boughtRootPlayer->size) //B->A
     {
         boughtRootPlayer->m_dady = buyerRootPlayer;
         boughtRootPlayer->m_player->setGamesPlayed(newPlayedGames);
         //r(b) += h(a) -r(a)
-        permutation_t newSpirit =   boughtRootPlayer->m_player->getSubSpirit()*buyerRootPlayer->m_team->getSpirit() * buyerRootPlayer->m_player->getSubSpirit().inv() ;
+        permutation_t newSpirit =   buyerRootPlayer->m_player->getSubSpirit().inv()*buyerRootPlayer->m_team->getSpirit()*boughtRootPlayer->m_player->getSubSpirit()  ;
         boughtRootPlayer->m_player->setSubSpirit(newSpirit);
         buyerRootPlayer->size += boughtRootPlayer->size;
-        buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
-        boughtRootPlayer->m_team.reset();
+        //buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
+
 
     }
     else //A->B
@@ -37,14 +43,16 @@ void WCUnionFind::unionTeams(int buyerTeamId, int boughtTeamId)
         buyerRootPlayer->m_player->setGamesPlayed(-newPlayedGames);
         //r(a) -= r(b)
         //r(b) += H(a)
-        buyerRootPlayer->m_player->setSubSpirit(buyerRootPlayer->m_player->getSubSpirit() *boughtRootPlayer->m_player->getSubSpirit().inv() );
         boughtRootPlayer->m_player->setSubSpirit(buyerRootPlayer->m_team->getSpirit() * boughtRootPlayer->m_player->getSubSpirit() );
+        buyerRootPlayer->m_player->setSubSpirit(boughtRootPlayer->m_player->getSubSpirit().inv()*buyerRootPlayer->m_player->getSubSpirit()  );
         boughtRootPlayer->size += buyerRootPlayer->size;
-        buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
-        boughtRootPlayer->m_team.reset();
+        //buyerRootPlayer->m_team->setSpirit(boughtRootPlayer->m_team->getSpirit()*buyerRootPlayer->m_team->getSpirit());
+
         boughtRootPlayer->m_team = buyerRootPlayer->m_team;
+        boughtRootPlayer->m_team->setRootPlayer(boughtRootPlayer);
     }
     buyerTeam->setSpirit(newTeamSpirit);
+    m_teams.remove(boughtTeamId);
 }
 
 
