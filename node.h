@@ -40,7 +40,7 @@ public:
 
 
 template<class K,class V>
-node < K, V> ::  node(const K& key,const V& value):height(0),numOfNodesInSubWood(1),left(nullptr),right(nullptr),dady(nullptr),key(key),value(value)
+node < K, V> ::  node(const K& key,const V& value):numOfNodesInSubWood(1),height(0),left(nullptr),right(nullptr),dady(nullptr),key(key),value(value)
 {
 
 }

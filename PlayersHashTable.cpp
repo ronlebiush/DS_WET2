@@ -5,7 +5,7 @@
 #include "PlayersHashTable.h"
 
 
-PlayersHashTable::PlayersHashTable(): m_capacity(7),m_size(0) {
+PlayersHashTable::PlayersHashTable():m_size(0),m_capacity(7) {
     m_table = new PlayerNode *[m_capacity];
     for (int i = 0; i < m_capacity; i++) {
         m_table[i] = nullptr;
