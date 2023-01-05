@@ -24,7 +24,10 @@ int Team::getTeamId() const{return m_TeamId;}
 int Team::getTeamPoints()const {return m_TeamPoints;}
 PlayerNode* Team::getRootPlayer() {return m_rootPlayer;}
 permutation_t& Team::getSpirit() {return m_teamSpirit;}
-TeamKey& Team::getTeamKey() {return *(new TeamKey(m_TeamAbility , m_TeamId));}
+TeamKey& Team::getTeamKey() {
+    m_key = TeamKey(m_TeamAbility , m_TeamId);
+    return m_key;
+}
 int Team::getGoaKeeperCount() const {return m_goaKeeperCount;}
 int Team::getTeamAbility() const {return m_TeamAbility;}
 

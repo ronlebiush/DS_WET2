@@ -47,12 +47,9 @@ public:
     void playGame();
     void winGame();
     void drawGame();
-    void addGoalKeeper();
-    void removeGoalKeeper();
     int getScore() const;
     bool isTeamKosher() const;
     bool isEmpty() const;
-    void addSpirit(const permutation_t& playerSpirit);
 };
 
 
