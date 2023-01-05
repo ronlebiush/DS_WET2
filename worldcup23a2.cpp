@@ -192,8 +192,8 @@ output_t<int> world_cup_t::get_team_points(int teamId) //  O(log(k)) worst case
 
 output_t<int> world_cup_t::get_ith_pointless_ability(int i)
 {
-    if (i < 0)
-        return StatusType::INVALID_INPUT;
+    if (i < 0 || m_teamsByAbility.isEmpty())
+        return StatusType::FAILURE;
     try{
         std::shared_ptr<Team> team = m_teamsByAbility.findByRank(i+1);
         return team->getTeamId();

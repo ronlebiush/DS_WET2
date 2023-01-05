@@ -70,35 +70,36 @@ void AVLTree<K,V> ::fixHeightForAllNodes(node<K, V> *cur) {
 
 template<class K,class V>
 node<K,V>* AVLTree<K,V> ::findByRankHelper(node<K, V> *cur, const int i) const {
-    if(!cur)
-    {return nullptr;}
-    //if the node have left son and it was found
+
     if(cur->getLeftSon() && cur->getLeftSon()->getNumOfNodesInSubWood() == i -1)
     {
         return cur;
     }
-    //if the node don't have left son and it was found
-    else if(!cur->getLeftSon() && i == 1)
-    {
-        return cur;
-    }
-    //if the node is in the left subtree
-    if (cur->getLeftSon() && cur->getLeftSon()->getNumOfNodesInSubWood() > i -1)
+    else if (cur->getLeftSon() && cur->getLeftSon()->getNumOfNodesInSubWood() > i -1)
     {
         return findByRankHelper(cur->getLeftSon(),i);
     }
     // if the node is in the right subtree
-    if(cur->getLeftSon() && cur->getLeftSon()->getNumOfNodesInSubWood() < i -1)
+    else if(cur->getLeftSon() && cur->getLeftSon()->getNumOfNodesInSubWood() < i -1)
     {
         return findByRankHelper(cur->getRightSon() , i - cur->getLeftSon()->getNumOfNodesInSubWood()-1);
+    }  //if the node don't have left son and it was found
+    else
+    {
+        if(cur->getRightSon() && i==2)
+        {return cur->getRightSon();}
+        else
+        {return cur;}
     }
-    return nullptr;
+    //if the node is in the left subtree
 
 
 }
 
 template<class K,class V>
 V& AVLTree<K,V> ::findByRank(const int i) const {
+    if(i > count)
+    {throw RankIsNotInRange();}
     node<K,V>* theNode = findByRankHelper(root,i);
 
     if (theNode == nullptr)
