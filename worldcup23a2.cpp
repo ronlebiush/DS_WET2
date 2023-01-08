@@ -70,24 +70,25 @@ StatusType world_cup_t::add_player(int playerId, int teamId,
         return StatusType::FAILURE;
     }
     m_teamsByAbility.remove(output_tTeam.ans()->getTeamKey());
+    try{
+        std::shared_ptr<Player> player = std::make_shared<Player>(playerId,spirit,gamesPlayed,ability,cards,goalKeeper);
+        if(m_teamsAndPlayers.insertPlayer(teamId,playerId,player)!=StatusType::SUCCESS)
+            return StatusType::FAILURE;
+        m_teamsByAbility.insert(output_tTeam.ans()->getTeamKey(),output_tTeam.ans());
 
-    std::shared_ptr<Player> player = std::make_shared<Player>(playerId,spirit,gamesPlayed,ability,cards,goalKeeper);
-    if(m_teamsAndPlayers.insertPlayer(teamId,playerId,player)!=StatusType::SUCCESS) {
-        return StatusType::FAILURE;
+    }
+    catch (std::bad_alloc& ba)
+    {
+        //std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+        return StatusType::ALLOCATION_ERROR;
     }
 
-    m_teamsByAbility.insert(output_tTeam.ans()->getTeamKey(),output_tTeam.ans());
-    std::shared_ptr<Team> teamOfPlayer= m_teamsAndPlayers.findPlayersTeam(playerId);
+
+    std::shared_ptr<Team> teamOfPlayer= m_teamsAndPlayers.findPlayersTeam(playerId); //no need
     return StatusType::SUCCESS;
 }
 
-//enum struct MatchStatus {
-//    DRAW                = 0,
-//    TEAM_1_ABILITY_WIN  = 1,
-//    TEAM_1_SPIRIT_WIN   = 2,
-//    TEAM_2_ABILITY_WIN  = 3,
-//    TEAM_2_SPIRIT_WIN   = 4,
-//};
+
 enum MatchStatus { DRAW ,TEAM_1_ABILITY_WIN ,TEAM_1_SPIRIT_WIN ,TEAM_2_ABILITY_WIN ,TEAM_2_SPIRIT_WIN };
 
 MatchStatus getMatchStatus(std::shared_ptr<Team> team1,std::shared_ptr<Team> team2){
@@ -231,9 +232,14 @@ StatusType world_cup_t::buy_team(int teamId1, int teamId2) //(int buyerTeamId, i
     output_t_buyerTeam.ans()->setTeamPoints(output_t_buyerTeam.ans()->getTeamPoints()+output_t_boughtTeam.ans()->getTeamPoints());
     output_t_buyerTeam.ans()->setAbility(output_t_buyerTeam.ans()->getTeamAbility()+output_t_boughtTeam.ans()->getTeamAbility());
     output_t_buyerTeam.ans()->setGoaKeeperCount(output_t_buyerTeam.ans()->getGoaKeeperCount()+output_t_boughtTeam.ans()->getGoaKeeperCount());
-    m_teamsByAbility.insert(output_t_buyerTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
-    //m_teamsByAbility.insert(output_t_boughtTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
-
+    try{
+        m_teamsByAbility.insert(output_t_buyerTeam.ans()->getTeamKey(),output_t_buyerTeam.ans());
+    }
+    catch (std::bad_alloc& ba)
+    {
+        //std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+        return StatusType::ALLOCATION_ERROR;
+    }
 
 
     return StatusType::SUCCESS;
